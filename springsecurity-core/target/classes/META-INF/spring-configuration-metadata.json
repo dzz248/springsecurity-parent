@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "myproject.security",
+      "type": "springsecurity.properites.SecurityProperties",
+      "sourceType": "springsecurity.properites.SecurityProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "myproject.security.authentication",
+      "type": "springsecurity.properites.AuthenticationProperties",
+      "sourceType": "springsecurity.properites.SecurityProperties"
+    }
+  ],
+  "hints": []
+}
