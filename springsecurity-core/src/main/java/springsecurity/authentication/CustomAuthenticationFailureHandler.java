@@ -20,7 +20,7 @@ import java.io.IOException;
 /**
  * 处理失败认证的
  *
- * @Auther: 梦学谷 www.mengxuegu.com
+ * @Auther: 豆 www.mengxuegu.com
  */
 @Slf4j
 @Component("customAuthenticationFailureHandler")

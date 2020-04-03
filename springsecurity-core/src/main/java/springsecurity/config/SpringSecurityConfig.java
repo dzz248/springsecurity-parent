@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -36,7 +37,7 @@ import javax.sql.DataSource;
  * alt+/ 导包
  * ctrl+o 覆盖
  *
- * @Auther: 梦学谷 www.mengxuegu.com
+ * @Auther: 豆 www.mengxuegu.com
  */
 @Configuration
 @EnableWebSecurity // 开启springsecurity过滤链 filter
@@ -97,6 +98,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Autowired
     private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+
     /**
      * 当你认证成功之后 ，springsecurity它会重写向到你上一次请求上
      * 资源权限配置：
@@ -109,7 +111,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 //        http.httpBasic() // 采用 httpBasic认证方式
         http
-                .addFilterBefore(mobileValidateFilter,UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(mobileValidateFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin() // 表单登录方式
                 .loginPage(securityProperties.getAuthentication().getLoginPage())
@@ -119,13 +121,28 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(customAuthenticationSuccessHandler)
                 .failureHandler(customAuthenticationFailureHandler)
                 .and()
-                .authorizeRequests() // 认证请求
+
+                .authorizeRequests() // 授权请求
+                //身份认证模块 S
                 .antMatchers(securityProperties.getAuthentication().getLoginPage(),
                         securityProperties.getAuthentication().getImageCodeUrl(),
                         securityProperties.getAuthentication().getMobileCodeUrl(),
                         securityProperties.getAuthentication().getMobilePage()
                 ).permitAll() // 放行/login/page 和 验证码 请求 /code/image不需要认证可访问
+                //身份认证模块 end
+
+                //权限模块 S
+                //hasRole 会追加前缀ROLE_   hasAuthority不会
+                .antMatchers("/user").hasAuthority("sys:user") // 设置角色是会加上 ROLE_ 作为前缀 ROLE_ADMIN
+                .antMatchers(HttpMethod.GET,"/role").hasAuthority("sys:role")
+                .antMatchers(HttpMethod.GET,"/permission")
+                .access("hasAuthority('sys:permission') or hasAnyRole('ADMIN','ROOT')") //有 权限 或者 角色是这个 都可以访问   给角色时要加ROLE_前缀
+//                .hasIpAddress("172.0.0.1")//IP限制
+                //权限模块 End
+
                 .anyRequest().authenticated() //所有访问该应用的http请求都要通过身份认证才可以访问
+
+
                 .and()
                 .rememberMe()//记住我功能
                 .tokenRepository(jdbcTokenRepository()) //保存登录信息
@@ -154,12 +171,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Autowired
     private CustomLogoutHandler customLogoutHandler;
+
     /**
      * 为了解决退出重新登录失败
+     *
      * @return
      */
     @Bean
-    public SessionRegistry sessionRegistry(){
+    public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
     }
 

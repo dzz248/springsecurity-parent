@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 查询数据库中的用户信息
- * @Auther: 梦学谷 www.mengxuegu.com
+ * @Auther: 豆 www.mengxuegu.com
  */
 @Component("customUserDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
@@ -39,7 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         // username 用户名, password 是数据库中这个用户存储的密码,
         // authorities 是权限资源标识, springsecurity会自动的判断用户是否合法,
         return new User(username, password,
-                AuthorityUtils.commaSeparatedStringToAuthorityList("ADMIN"));
+                AuthorityUtils.commaSeparatedStringToAuthorityList("sys:user,sys:role，ROLE_ADMIN"));
     }
 
 }

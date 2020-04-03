@@ -2,7 +2,7 @@ package springsecurity.properites;
 
 /**
  * 认证响应的类型
- * @Auther: 梦学谷 www.mengxuegu.com
+ * @Auther: 豆 www.mengxuegu.com
  */
 public enum LoginResponseType {
 

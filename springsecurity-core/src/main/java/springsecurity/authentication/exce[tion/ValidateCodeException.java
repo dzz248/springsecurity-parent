@@ -4,7 +4,7 @@ import org.springframework.security.core.AuthenticationException;
 
 /**
  * 验证码相关异常类
- * @Auther: 梦学谷 www.mengxuegu.com
+ * @Auther: 豆 www.mengxuegu.com
  */
 public class ValidateCodeException extends AuthenticationException {
     public ValidateCodeException(String msg, Throwable t) {

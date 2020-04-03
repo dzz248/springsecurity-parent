@@ -20,7 +20,7 @@ import java.io.IOException;
 /**
  * 认证成功处理器
  * 1. 决定 响应json还是跳转页面，或者认证成功后进行其他处理
- * @Auther: 梦学谷 www.mengxuegu.com
+ * @Auther: 豆 www.mengxuegu.com
  */
 @Component("customAuthenticationSuccessHandler")
 //public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {

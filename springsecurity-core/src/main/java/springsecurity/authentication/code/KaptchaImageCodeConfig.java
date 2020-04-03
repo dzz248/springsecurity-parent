@@ -10,7 +10,7 @@ import java.util.Properties;
 
 /**
  * 使用第三方Kaptcha来生成图形验证码
- * @Auther: 梦学谷 www.mengxuegu.com
+ * @Auther: 豆 www.mengxuegu.com
  */
 @Configuration
 public class KaptchaImageCodeConfig {

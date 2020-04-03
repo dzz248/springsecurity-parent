@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * 用户管理
  **/
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/permission")
 public class SysPermissionController {
     private static final String HTML_PREFIX = "system/user/";
 

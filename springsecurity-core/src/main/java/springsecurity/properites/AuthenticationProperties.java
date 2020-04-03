@@ -3,7 +3,7 @@ package springsecurity.properites;
 import lombok.Data;
 
 /**
- * @Auther: 梦学谷 www.mengxuegu.com
+ * @Auther: 豆 www.mengxuegu.com
  */
 @Data
 public class AuthenticationProperties {
