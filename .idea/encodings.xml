@@ -3,7 +3,10 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/springsecurity-base" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springsecurity-base/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/springsecurity-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springsecurity-core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/springsecurity-web" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springsecurity-web/src/main/java" charset="UTF-8" />
   </component>
 </project>

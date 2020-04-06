@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,6 +27,7 @@ import org.springframework.security.web.session.SessionInformationExpiredStrateg
 import springsecurity.authentication.code.ImageCodeValidateFilter;
 import springsecurity.authentication.mobile.MobileAuthenticationConfig;
 import springsecurity.authentication.mobile.MobileValidateFilter;
+import springsecurity.authorize.AuthorizeConfigurerManager;
 import springsecurity.properites.AuthenticationProperties;
 import springsecurity.properites.SecurityProperties;
 import springsecurity.session.CustomLogoutHandler;
@@ -37,10 +39,11 @@ import javax.sql.DataSource;
  * alt+/ 导包
  * ctrl+o 覆盖
  *
- * @Auther: 豆 www.mengxuegu.com
+ * @Auther: 豆
  */
 @Configuration
 @EnableWebSecurity // 开启springsecurity过滤链 filter
+@EnableGlobalMethodSecurity(prePostEnabled = true) //开启注解方法级别权限控制
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -99,6 +102,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
 
+    @Autowired
+    private AuthorizeConfigurerManager authorizeConfigurerManager;
     /**
      * 当你认证成功之后 ，springsecurity它会重写向到你上一次请求上
      * 资源权限配置：
@@ -120,27 +125,27 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter(securityProperties.getAuthentication().getPasswordParameter())  // 密码属性名默认的是 password
                 .successHandler(customAuthenticationSuccessHandler)
                 .failureHandler(customAuthenticationFailureHandler)
-                .and()
 
-                .authorizeRequests() // 授权请求
-                //身份认证模块 S
-                .antMatchers(securityProperties.getAuthentication().getLoginPage(),
-                        securityProperties.getAuthentication().getImageCodeUrl(),
-                        securityProperties.getAuthentication().getMobileCodeUrl(),
-                        securityProperties.getAuthentication().getMobilePage()
-                ).permitAll() // 放行/login/page 和 验证码 请求 /code/image不需要认证可访问
-                //身份认证模块 end
-
-                //权限模块 S
-                //hasRole 会追加前缀ROLE_   hasAuthority不会
-                .antMatchers("/user").hasAuthority("sys:user") // 设置角色是会加上 ROLE_ 作为前缀 ROLE_ADMIN
-                .antMatchers(HttpMethod.GET,"/role").hasAuthority("sys:role")
-                .antMatchers(HttpMethod.GET,"/permission")
-                .access("hasAuthority('sys:permission') or hasAnyRole('ADMIN','ROOT')") //有 权限 或者 角色是这个 都可以访问   给角色时要加ROLE_前缀
-//                .hasIpAddress("172.0.0.1")//IP限制
-                //权限模块 End
-
-                .anyRequest().authenticated() //所有访问该应用的http请求都要通过身份认证才可以访问
+//                .and()
+//                .authorizeRequests() // 授权请求
+//                //身份认证模块 S
+//                .antMatchers(securityProperties.getAuthentication().getLoginPage(),
+//                        securityProperties.getAuthentication().getImageCodeUrl(),
+//                        securityProperties.getAuthentication().getMobileCodeUrl(),
+//                        securityProperties.getAuthentication().getMobilePage()
+//                ).permitAll() // 放行/login/page 和 验证码 请求 /code/image不需要认证可访问
+//                //身份认证模块 end
+//
+//                //权限模块 S
+//                //hasRole 会追加前缀ROLE_   hasAuthority不会
+//                .antMatchers("/user").hasAuthority("sys:user") // 设置角色是会加上 ROLE_ 作为前缀 ROLE_ADMIN
+//                .antMatchers(HttpMethod.GET,"/role").hasAuthority("sys:role")
+//                .antMatchers(HttpMethod.GET,"/permission")
+//                .access("hasAuthority('sys:permission') or hasAnyRole('ADMIN','ROOT')") //有 权限 或者 角色是这个 都可以访问   给角色时要加ROLE_前缀
+////                .hasIpAddress("172.0.0.1")//IP限制
+//                //权限模块 End
+//
+//                .anyRequest().authenticated() //所有访问该应用的http请求都要通过身份认证才可以访问
 
 
                 .and()
@@ -164,6 +169,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable(); //关闭跨站请求伪造
         //将手机认证添加到过滤器链上
         http.apply(mobileAuthenticationConfig);
+        // 将所有的授权配置统一管理
+        authorizeConfigurerManager.configure(http.authorizeRequests());
+
     }
 
     /**
